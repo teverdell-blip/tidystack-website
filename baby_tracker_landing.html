@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Tidystack Baby Tracker — Free Companion App</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blush:#F9EDE8;
+  --rose:#D4786A;
+  --rose-dk:#B85F52;
+  --sage:#7A9E7E;
+  --ink:#1C1F26;
+  --mid:#6B6560;
+  --muted:#A09890;
+  --white:#FFFFFF;
+  --feed:#6B9FD4;
+  --nap:#9B8EC4;
+  --nappy:#A97C50;
+  --bath:#4DB6AC;
+  --border:#EDE8E3;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--white);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:60px 24px 52px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  background:var(--blush);
+}
+.hero-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, #F2D8D2 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, #DDE8D4 0%, transparent 60%),
+    var(--blush);
+  animation:shift 8s ease-in-out infinite alternate;
+}
+@keyframes shift{
+  0%{opacity:1}
+  50%{opacity:0.7}
+  100%{opacity:1}
+}
+.hero-badge{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:white;
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:6px 14px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--mid);
+  margin-bottom:28px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.hero-badge-dot{
+  width:7px;height:7px;
+  background:var(--sage);
+  border-radius:50%;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.4);opacity:0.7}
+}
+.hero h1{
+  position:relative;
+  font-family:'Lora',serif;
+  font-size:clamp(36px,10vw,56px);
+  font-weight:600;
+  line-height:1.15;
+  color:var(--ink);
+  max-width:340px;
+  margin-bottom:14px;
+}
+.hero h1 em{
+  font-style:italic;
+  color:var(--rose);
+}
+.hero-sub{
+  position:relative;
+  font-size:16px;
+  color:var(--mid);
+  max-width:300px;
+  margin-bottom:36px;
+  font-weight:500;
+  line-height:1.6;
+}
+
+/* Live feed timer card */
+.timer-card{
+  position:relative;
+  background:white;
+  border-radius:20px;
+  padding:20px 28px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.10);
+  margin-bottom:36px;
+  width:100%;
+  max-width:300px;
+  text-align:left;
+}
+.timer-card-label{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+.timer-card-time{
+  font-family:'Lora',serif;
+  font-size:48px;
+  font-weight:600;
+  color:var(--feed);
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-1px;
+}
+.timer-card-sub{
+  font-size:13px;
+  color:var(--mid);
+  margin-top:6px;
+  font-weight:500;
+}
+.timer-card-sub span{
+  color:var(--rose);
+  font-weight:700;
+}
+.timer-bar-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+}
+.timer-bar-track{
+  flex:1;
+  height:6px;
+  background:#F0EBE6;
+  border-radius:3px;
+  overflow:hidden;
+}
+.timer-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--feed),var(--rose));
+  border-radius:3px;
+  animation:fillbar 6s ease-in-out infinite alternate;
+}
+@keyframes fillbar{
+  0%{width:20%}100%{width:85%}
+}
+.timer-bar-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.hero-cta{
+  position:relative;
+  display:inline-block;
+  background:var(--rose);
+  color:white;
+  font-size:17px;
+  font-weight:700;
+  padding:17px 40px;
+  border-radius:30px;
+  text-decoration:none;
+  box-shadow:0 4px 20px rgba(216,120,106,0.35);
+  transition:background 0.15s,transform 0.1s,box-shadow 0.15s;
+  letter-spacing:0.01em;
+}
+.hero-cta:hover{
+  background:var(--rose-dk);
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(216,120,106,0.4);
+}
+.hero-cta:active{transform:translateY(0)}
+.hero-note{
+  position:relative;
+  margin-top:14px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* ── WHAT IT ADDS ─────────────────────────────────────────── */
+.section{
+  padding:56px 24px;
+  max-width:400px;
+  margin:0 auto;
+}
+.eyebrow{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--rose);
+  margin-bottom:12px;
+}
+.section h2{
+  font-family:'Lora',serif;
+  font-size:clamp(26px,6vw,36px);
+  font-weight:600;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+.section h2 em{font-style:italic;color:var(--rose)}
+.section-lead{
+  font-size:15px;
+  color:var(--mid);
+  margin-bottom:28px;
+  font-weight:500;
+}
+
+/* Feature pills */
+.feature-list{display:flex;flex-direction:column;gap:12px}
+.feature-item{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  background:var(--blush);
+  border-radius:14px;
+  padding:16px 16px;
+}
+.feature-icon{
+  width:38px;height:38px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+}
+.feature-body h3{
+  font-size:14px;font-weight:700;margin-bottom:2px
+}
+.feature-body p{
+  font-size:13px;color:var(--mid);line-height:1.5;margin:0
+}
+
+/* ── HOW IT WORKS ─────────────────────────────────────────── */
+.steps-section{
+  background:var(--ink);
+  padding:56px 24px;
+}
+.steps-inner{
+  max-width:400px;
+  margin:0 auto;
+}
+.steps-section .eyebrow{color:var(--rose)}
+.steps-section h2{
+  font-family:'Lora',serif;
+  font-size:clamp(26px,6vw,36px);
+  font-weight:600;
+  color:white;
+  margin-bottom:28px;
+  line-height:1.2;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:20px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.step-num{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:var(--rose);
+  color:white;
+  font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.step-body h3{font-size:15px;font-weight:700;color:white;margin-bottom:3px}
+.step-body p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.55;margin:0}
+.step-body a{color:var(--rose);text-decoration:none;font-weight:600}
+
+/* ── APP PREVIEW ──────────────────────────────────────────── */
+.preview-section{
+  background:var(--blush);
+  padding:56px 24px;
+}
+.preview-inner{max-width:400px;margin:0 auto}
+.app-card{
+  background:white;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 12px 48px rgba(0,0,0,0.12);
+}
+.app-header{
+  background:white;
+  border-bottom:1px solid var(--border);
+  padding:14px 16px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.app-title{font-weight:700;font-size:17px;letter-spacing:-0.3px}
+.app-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.app-menu{
+  background:#F0F0F0;
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:18px;color:#666;
+}
+.sync-bar{
+  background:white;
+  border-bottom:1px solid var(--border);
+  padding:7px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:12px;
+  color:#666;
+}
+.sync-dot{
+  width:7px;height:7px;
+  background:var(--sage);
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+}
+.app-content{padding:14px}
+.today-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-bottom:10px;
+}
+.today-grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:14px;
+}
+.today-card{
+  border-radius:12px;
+  padding:10px 8px;
+  text-align:center;
+}
+.today-emoji{font-size:18px}
+.today-count{font-weight:800;font-size:22px;line-height:1.1;margin-top:2px}
+.today-label{font-size:10px;color:var(--muted);margin-top:2px}
+.today-since{font-size:10px;font-weight:700;margin-top:2px}
+.log-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;
+  margin-bottom:7px;
+}
+.log-grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+.log-btn{
+  border:none;border-radius:11px;
+  padding:10px 4px;
+  font-weight:700;font-size:11px;
+  color:white;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;
+}
+
+/* Timer bar */
+.timer-bar-preview{
+  padding:8px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  font-size:12px;font-weight:600;
+  background:#EBF3FB;
+}
+.timer-display-preview{
+  font-size:17px;font-weight:800;
+  color:var(--feed);
+  font-variant-numeric:tabular-nums;
+}
+.tctl-preview{
+  border:none;border-radius:7px;
+  padding:5px 10px;
+  font-size:11px;font-weight:700;
+  color:white;background:var(--feed);
+  cursor:pointer;
+}
+
+/* ── BOTTOM CTA ───────────────────────────────────────────── */
+.cta-section{
+  padding:56px 24px 72px;
+  text-align:center;
+  max-width:400px;
+  margin:0 auto;
+}
+.cta-section h2{
+  font-family:'Lora',serif;
+  font-size:clamp(28px,7vw,40px);
+  font-weight:600;
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.cta-section h2 em{font-style:italic;color:var(--rose)}
+.cta-section p{
+  font-size:15px;color:var(--mid);
+  margin-bottom:28px;font-weight:500;
+}
+.cta-big{
+  display:inline-block;
+  background:var(--rose);
+  color:white;
+  font-size:18px;font-weight:700;
+  padding:18px 48px;
+  border-radius:32px;
+  text-decoration:none;
+  box-shadow:0 6px 24px rgba(216,120,106,0.35);
+  transition:background 0.15s,transform 0.1s;
+  margin-bottom:14px;
+  display:block;
+}
+.cta-big:hover{background:var(--rose-dk);transform:translateY(-2px)}
+.cta-note{font-size:12px;color:var(--muted)}
+.cta-note a{color:var(--rose);text-decoration:none;font-weight:600}
+
+/* Divider */
+hr.div{border:none;border-top:1px solid var(--border)}
+
+/* Etsy badge */
+.etsy-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:16px 24px;
+  background:var(--blush);
+  font-size:13px;
+  color:var(--mid);
+  font-weight:500;
+}
+.etsy-note strong{color:var(--ink)}
+
+footer{
+  text-align:center;
+  padding:24px;
+  font-size:12px;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+}
+footer a{color:var(--rose);text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    Free with your Tidystack spreadsheet pack
+  </div>
+
+  <h1>Your baby tracker, <em>always on.</em></h1>
+  <p class="hero-sub">Live timers, push reminders, and real-time sync with your partner. On both phones.</p>
+
+  <!-- Live ticker -->
+  <div class="timer-card">
+    <div class="timer-card-label">🍼 Time since last feed</div>
+    <div class="timer-card-time" id="live-timer">0h 43m</div>
+    <div class="timer-card-sub">
+      Feed reminder in <span id="reminder-countdown">1h 17m</span>
+    </div>
+    <div class="timer-bar-row">
+      <div class="timer-bar-track">
+        <div class="timer-bar-fill"></div>
+      </div>
+      <span class="timer-bar-label">of 2h</span>
+    </div>
+  </div>
+
+  <a href="https://tidystack.com.au/baby-tracker" class="hero-cta">
+    Open the app →
+  </a>
+  <p class="hero-note">Free · No account · Works on any phone</p>
+</section>
+
+<!-- WHAT IT ADDS -->
+<section class="section">
+  <div class="eyebrow">What the app adds</div>
+  <h2>Everything the spreadsheet does, <em>plus this.</em></h2>
+  <p class="section-lead">Your spreadsheet is great for logging and reviewing. The app is for right now — at 3am, one handed, half asleep.</p>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <div class="feature-icon" style="background:#EBF3FB">⏱️</div>
+      <div class="feature-body">
+        <h3>Live feed &amp; nap timers</h3>
+        <p>Tap to start, tap to stop. Duration saves automatically. No typing while feeding.</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:#EEF4EE">🔔</div>
+      <div class="feature-body">
+        <h3>Feed reminders</h3>
+        <p>Set how often you want a reminder. The app notifies you even when the screen is off.</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:#F0EDF8">👫</div>
+      <div class="feature-body">
+        <h3>Shared with your partner</h3>
+        <p>Both phones sync to the same Google Sheet. You can both see what happened and who did it.</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:#FEF9E7">📊</div>
+      <div class="feature-body">
+        <h3>Charts &amp; daily dashboard</h3>
+        <p>See feeds, sleep, and nappies across the last 7 days at a glance. Customisable charts.</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:#E0F5F3">📋</div>
+      <div class="feature-body">
+        <h3>Syncs to your spreadsheet</h3>
+        <p>Everything logged in the app appears in your Google Sheet automatically. Works both ways.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- HOW IT WORKS -->
+<section class="steps-section">
+  <div class="steps-inner">
+    <div class="eyebrow">Setup</div>
+    <h2>Ready in 5 minutes</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Open the app</h3>
+        <p>Tap the button below. The app opens in your browser — no App Store needed.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Add to your home screen</h3>
+        <p>iPhone: tap Share → "Add to Home Screen". Android: tap ⋮ → "Add to Home Screen". Now it works like a real app.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Connect your Google Sheet</h3>
+        <p>The app walks you through a 3-step setup. Create a free Google Sheet, paste the sync script, and you're connected. Full guide included in your download — or see
+          <a href="https://tidystack.com.au/baby-tracker-setup" target="_blank">tidystack.com.au/baby-tracker-setup</a>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Share with your partner</h3>
+        <p>Open the app on their phone, tap "Set up sync", paste the same Script URL. Use a different name so you can see who logged what.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<section class="preview-section">
+  <div class="preview-inner">
+    <div class="eyebrow" style="text-align:center;margin-bottom:16px">What it looks like</div>
+    <div class="app-card">
+      <!-- App header -->
+      <div class="app-header">
+        <div>
+          <div class="app-title">👶 Baby Tracker</div>
+          <div class="app-sub">Last feed: 43m ago · Breast L</div>
+        </div>
+        <div class="app-menu">⋯</div>
+      </div>
+      <!-- Sync bar -->
+      <div class="sync-bar">
+        <span><span class="sync-dot"></span>Synced 2m ago</span>
+        <span style="background:#6B9FD4;color:white;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700">↻ Refresh</span>
+      </div>
+      <!-- Active feed timer -->
+      <div class="timer-bar-preview">
+        <span style="color:#3A6A9A">🍼 · Breast L (Mum)</span>
+        <span class="timer-display-preview" id="app-timer">00:43</span>
+        <button class="tctl-preview">■ Stop</button>
+      </div>
+      <!-- Today stats -->
+      <div class="app-content">
+        <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Today</div>
+        <div class="today-grid">
+          <div class="today-card" style="background:#EBF3FB">
+            <div class="today-emoji">🍼</div>
+            <div class="today-count" style="color:#6B9FD4">7</div>
+            <div class="today-label">Feeds</div>
+            <div class="today-since" style="color:#6B9FD4">43m ago</div>
+          </div>
+          <div class="today-card" style="background:#FEF9E7">
+            <div class="today-emoji">💛</div>
+            <div class="today-count" style="color:#C8A000">6</div>
+            <div class="today-label">Wees</div>
+          </div>
+          <div class="today-card" style="background:#F5EDE3">
+            <div class="today-emoji">💩</div>
+            <div class="today-count" style="color:#A97C50">3</div>
+            <div class="today-label">Poos</div>
+          </div>
+        </div>
+        <div class="today-grid-2">
+          <div class="today-card" style="background:#F0EDF8">
+            <div class="today-emoji">😴</div>
+            <div class="today-count" style="color:#9B8EC4">4</div>
+            <div class="today-label">Naps</div>
+            <div class="today-since" style="color:#9B8EC4">6h 20m total</div>
+          </div>
+          <div class="today-card" style="background:#E0F5F3">
+            <div class="today-emoji">🛁</div>
+            <div class="today-count" style="color:#4DB6AC">1</div>
+            <div class="today-label">Baths</div>
+            <div class="today-since" style="color:#4DB6AC">2h ago</div>
+          </div>
+        </div>
+        <div class="log-grid">
+          <button class="log-btn" style="background:#6B9FD4">
+            <span style="font-size:17px">🍼</span>Feed
+          </button>
+          <button class="log-btn" style="background:#F0C040">
+            <span style="font-size:17px">💛</span>Wee
+          </button>
+          <button class="log-btn" style="background:#A97C50">
+            <span style="font-size:17px">💩</span>Poo
+          </button>
+        </div>
+        <div class="log-grid-2">
+          <button class="log-btn" style="background:#9B8EC4">
+            <span style="font-size:17px">😴</span>Log Nap
+          </button>
+          <button class="log-btn" style="background:#4DB6AC">
+            <span style="font-size:17px">🛁</span>Log Bath
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section style="padding:56px 24px 48px;text-align:center;max-width:400px;margin:0 auto">
+  <h2 style="font-family:'Lora',serif;font-size:clamp(28px,7vw,38px);font-weight:600;line-height:1.2;margin-bottom:12px">
+    Ready to try it?
+  </h2>
+  <p style="font-size:15px;color:var(--mid);margin-bottom:28px;font-weight:500">
+    Free forever. No account. Works on iPhone and Android. 
+    Your data stays in your own Google Sheet.
+  </p>
+  <a href="https://tidystack.com.au/baby-tracker"
+    style="display:block;background:var(--rose);color:white;font-size:18px;font-weight:700;
+    padding:18px 40px;border-radius:32px;text-decoration:none;
+    box-shadow:0 6px 24px rgba(216,120,106,0.35);margin-bottom:14px">
+    Open the app →
+  </a>
+  <p style="font-size:12px;color:var(--muted)">
+    Free · No account needed · iPhone &amp; Android
+  </p>
+</section>
+
+<div class="etsy-note">
+  🛍️ &nbsp;Got here from your Etsy download? The setup guide PDF is included in your ZIP file.
+  Questions? <strong>hello@tidystack.com.au</strong>
+</div>
+
+<footer>
+  <a href="https://tidystack.com.au">Tidystack</a> &nbsp;·&nbsp; Free companion app for the Baby Tracker Spreadsheet Pack
+</footer>
+
+<script>
+// Live feed timer — counts up from a fake "last feed" time
+// Starts at 43m and keeps going, so it feels real on first load
+const START_SECS = 43 * 60; // 43 minutes already elapsed
+const REMINDER_SECS = 2 * 60 * 60; // 2-hour reminder
+let elapsed = START_SECS;
+
+function fmtTime(secs) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return h + 'h ' + String(m).padStart(2,'0') + 'm';
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function fmtCountdown(secs) {
+  const remaining = Math.max(0, REMINDER_SECS - secs);
+  const h = Math.floor(remaining / 3600);
+  const m = Math.floor((remaining % 3600) / 60);
+  if (remaining <= 0) return 'Now!';
+  if (h > 0) return h + 'h ' + m + 'm';
+  return m + 'm';
+}
+
+const liveTimer = document.getElementById('live-timer');
+const appTimer  = document.getElementById('app-timer');
+const countdown = document.getElementById('reminder-countdown');
+
+setInterval(() => {
+  elapsed++;
+  if (liveTimer) liveTimer.textContent = fmtTime(elapsed);
+  if (appTimer)  appTimer.textContent  = fmtTime(elapsed);
+  if (countdown) countdown.textContent = fmtCountdown(elapsed);
+}, 1000);
+</script>
+
+</body>
+</html>
